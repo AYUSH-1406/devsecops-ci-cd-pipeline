@@ -34,8 +34,7 @@ pipeline {
                 }
             }
         }
-<<<<<<< HEAD
-=======
+
         
 stage('Quality Gate') {
     steps {
@@ -44,7 +43,6 @@ stage('Quality Gate') {
         }
     }
 }
->>>>>>> ee03046 (Fix Dockerfile for WAR deployment and dockerignore)
   stage('OWASP Dependency Check') {
     steps {
         dependencyCheck additionalArguments: '--scan .',
@@ -52,8 +50,7 @@ stage('Quality Gate') {
         dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
     }
 }
-<<<<<<< HEAD
-=======
+
         stage('Docker Build') {
     steps {
         sh 'docker build -t $DOCKER_IMAGE .'
@@ -74,6 +71,5 @@ stage('Docker Push') {
         }
     }
 }
->>>>>>> ee03046 (Fix Dockerfile for WAR deployment and dockerignore)
     }
 }
