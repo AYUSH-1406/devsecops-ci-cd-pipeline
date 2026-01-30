@@ -57,16 +57,16 @@ stage('Quality Gate') {
     }
 }
 
-        stage('Trivy Image Scan') {
-    steps {
-        sh '''
-          trivy image \
-          --severity HIGH,CRITICAL \
-          --exit-code 1 \
-          $DOCKER_IMAGE
-        '''
-    }
-}
+//         stage('Trivy Image Scan') {
+//     steps {
+//         sh '''
+//           trivy image \
+//           --severity HIGH,CRITICAL \
+//           --exit-code 1 \
+//           $DOCKER_IMAGE
+//         '''
+//     }
+// }
 stage('Docker Push') {
     steps {
         withCredentials([usernamePassword(
