@@ -85,21 +85,18 @@ stage('Docker Push') {
 }
 
 stage('Deploy to EKS using Helm') {
-    steps {
-        script {
-            try {
-                sh '''
-                  helm upgrade --install devsecops devsecops-chart \
-                  --set image.repository=dockerhubusername/devsecops-app \
-                  --set image.tag=${IMAGE_TAG}
-                '''
-            } catch (Exception e) {
-                sh 'helm rollback devsecops'
-                error "Deployment failed. Rolled back to previous release."
-            }
-        }
+  steps {
+    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-creds']]) {
+      sh '''
+        aws eks update-kubeconfig --name devsecops-cluster --region ap-south-1
+        helm upgrade --install devsecops devsecops-chart \
+          --set image.repository=ayush1406/devsecops-app \
+          --set image.tag=latest
+      '''
     }
+  }
 }
+
 
     }
 }
