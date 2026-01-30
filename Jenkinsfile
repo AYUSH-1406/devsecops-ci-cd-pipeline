@@ -7,6 +7,7 @@ pipeline {
 
     environment {
         SONAR_SCANNER_HOME = tool 'sonar-scanner'
+        DOCKER_IMAGE = "ayush1406/devsecops-app:latest"
     }
 
     stages {
@@ -33,6 +34,17 @@ pipeline {
                 }
             }
         }
+<<<<<<< HEAD
+=======
+        
+stage('Quality Gate') {
+    steps {
+        timeout(time: 10, unit: 'MINUTES') {
+            waitForQualityGate abortPipeline: true
+        }
+    }
+}
+>>>>>>> ee03046 (Fix Dockerfile for WAR deployment and dockerignore)
   stage('OWASP Dependency Check') {
     steps {
         dependencyCheck additionalArguments: '--scan .',
@@ -40,5 +52,28 @@ pipeline {
         dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
     }
 }
+<<<<<<< HEAD
+=======
+        stage('Docker Build') {
+    steps {
+        sh 'docker build -t $DOCKER_IMAGE .'
+    }
+}
+
+stage('Docker Push') {
+    steps {
+        withCredentials([usernamePassword(
+            credentialsId: 'dockerhub-creds',
+            usernameVariable: 'DOCKER_USER',
+            passwordVariable: 'DOCKER_PASS'
+        )]) {
+            sh '''
+              echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+              docker push $DOCKER_IMAGE
+            '''
+        }
+    }
+}
+>>>>>>> ee03046 (Fix Dockerfile for WAR deployment and dockerignore)
     }
 }
