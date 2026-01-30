@@ -81,13 +81,15 @@ stage('Docker Push') {
         }
     }
 }
-        stage('Deploy to EKS') {
-    steps {
-        sh '''
-          kubectl apply -f k8s/
-          kubectl rollout status deployment/devsecops-app
-        '''
+ stage('Deploy to EKS') {
+  steps {
+    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-creds']]) {
+      sh '''
+        aws eks update-kubeconfig --name devsecops-cluster --region ap-south-1
+        kubectl apply -f k8s/
+      '''
     }
+  }
 }
     }
 }
