@@ -81,5 +81,13 @@ stage('Docker Push') {
         }
     }
 }
+        stage('Deploy to EKS') {
+    steps {
+        sh '''
+          kubectl apply -f k8s/
+          kubectl rollout status deployment/devsecops-app
+        '''
+    }
+}
     }
 }
