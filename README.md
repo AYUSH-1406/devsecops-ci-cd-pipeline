@@ -209,6 +209,10 @@ eksctl delete cluster --name devsecops-cluster --region ap-south-1
 
 ---
 
+<img width="1898" height="836" alt="image" src="https://github.com/user-attachments/assets/20ff3e4d-d2c6-4cf4-a239-8675e717a054" />
+<img width="1919" height="888" alt="image" src="https://github.com/user-attachments/assets/7a65089b-572b-4299-a8b4-cb3ecc53e156" />
+
+
 ## ⭐ Final Note
 
 This project reflects **real-world DevSecOps implementation**, not a toy example.
@@ -216,8 +220,3 @@ Feel free to fork, extend, or use it as a reference for production pipelines.
 
 ---
 
-If you want, next I can:
-
-* Review your **actual Jenkinsfile** for polish
-* Add **badges** (build, security, Docker pulls)
-* Mock **DevSecOps interview questions** based on this project
