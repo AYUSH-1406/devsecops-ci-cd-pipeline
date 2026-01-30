@@ -7,7 +7,8 @@ pipeline {
 
     environment {
         SONAR_SCANNER_HOME = tool 'sonar-scanner'
-        DOCKER_IMAGE = "ayush1406/devsecops-app:latest"
+        IMAGE_TAG = "${BUILD_NUMBER}"
+        DOCKER_IMAGE = "ayush1406/devsecops-app:${BUILD_NUMBER}"
     }
 
     stages {
@@ -51,13 +52,13 @@ stage('Quality Gate') {
     }
 }
 
-        stage('Docker Build') {
+stage('Docker Build') {
     steps {
         sh 'docker build -t $DOCKER_IMAGE .'
     }
 }
 
-//         stage('Trivy Image Scan') {
+// stage('Trivy Image Scan') {
 //     steps {
 //         sh '''
 //           trivy image \
@@ -67,6 +68,7 @@ stage('Quality Gate') {
 //         '''
 //     }
 // }
+
 stage('Docker Push') {
     steps {
         withCredentials([usernamePassword(
@@ -81,15 +83,23 @@ stage('Docker Push') {
         }
     }
 }
- stage('Deploy to EKS') {
-  steps {
-    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-creds']]) {
-      sh '''
-        aws eks update-kubeconfig --name devsecops-cluster --region ap-south-1
-        kubectl apply -f k8s/
-      '''
+
+stage('Deploy to EKS using Helm') {
+    steps {
+        script {
+            try {
+                sh '''
+                  helm upgrade --install devsecops devsecops-chart \
+                  --set image.repository=dockerhubusername/devsecops-app \
+                  --set image.tag=${IMAGE_TAG}
+                '''
+            } catch (Exception e) {
+                sh 'helm rollback devsecops'
+                error "Deployment failed. Rolled back to previous release."
+            }
+        }
     }
-  }
 }
+
     }
 }
